@@ -6,13 +6,13 @@
       </div>
 
       <div class="form-area">
-        <p class="form-desc">招待コードを入力してください</p>
+        <p class="form-desc">認証番号を入力してください</p>
         <form @submit.prevent="handleSubmit">
           <input
             v-model="code"
             type="text"
             class="code-input"
-            placeholder="招待コード"
+            placeholder="認証番号"
             maxlength="8"
             autocomplete="off"
             spellcheck="false"
@@ -51,7 +51,7 @@ async function handleSubmit() {
   } catch (err) {
     const status = err.response?.status
     if (status === 401) {
-      errorMsg.value = 'コードが無効か、すでに使用されています。'
+      errorMsg.value = '認証番号が無効か、すでに使用されています。'
     } else if (status === 429) {
       errorMsg.value = 'しばらく時間をおいて再度お試しください。'
     } else {
