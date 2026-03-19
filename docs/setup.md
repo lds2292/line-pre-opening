@@ -85,7 +85,28 @@ npm run dev
 - Publish directory: `dist`
 - 환경변수: `VITE_API_URL=https://<project-ref>.supabase.co/functions/v1`
 
-## 7. curl 테스트 예시
+## 7. 관리자 계정 변경
+
+관리자 아이디 또는 패스워드를 변경할 경우 아래 절차를 따릅니다.
+
+```bash
+# 아이디 변경
+supabase secrets set ADMIN_USERNAME=새아이디
+
+# 패스워드 변경
+# 1) 먼저 bcrypt 해시 생성 (bcryptjs 미설치 시: npm install -g bcryptjs)
+node -e "console.log(require('bcryptjs').hashSync('새패스워드', 12))"
+
+# 2) 생성된 해시로 secret 업데이트
+supabase secrets set ADMIN_PASSWORD_HASH='생성된해시값'
+
+# 3) secrets 변경 후 반드시 함수 재배포
+supabase functions deploy admin-login
+```
+
+> ⚠️ 재배포를 하지 않으면 변경사항이 반영되지 않습니다.
+
+## 8. curl 테스트 예시
 
 ```bash
 # 코드 검증
