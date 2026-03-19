@@ -1,5 +1,8 @@
 <template>
   <div class="dashboard">
+    <!-- 상단 진행 바 -->
+    <div class="progress-bar" :class="{ active: globalBusy }"></div>
+
     <!-- Header -->
     <header class="dash-header">
       <div class="header-left">
@@ -122,13 +125,17 @@
                     </button>
                     <button
                       class="action-btn btn-reissue"
-                      :disabled="!c.used"
+                      :disabled="!c.used || pendingId === c.id"
                       @click="reissueCode(c)"
                     >
-                      {{ t.btnReissue }}
+                      {{ pendingId === c.id ? '...' : t.btnReissue }}
                     </button>
-                    <button class="action-btn btn-delete" @click="deleteCode(c)">
-                      {{ t.btnDelete }}
+                    <button
+                      class="action-btn btn-delete"
+                      :disabled="pendingId === c.id"
+                      @click="deleteCode(c)"
+                    >
+                      {{ pendingId === c.id ? '...' : t.btnDelete }}
                     </button>
                   </td>
                 </tr>
@@ -161,13 +168,17 @@
                 </button>
                 <button
                   class="action-btn btn-reissue"
-                  :disabled="!c.used"
+                  :disabled="!c.used || pendingId === c.id"
                   @click="reissueCode(c)"
                 >
-                  {{ t.btnReissue }}
+                  {{ pendingId === c.id ? '...' : t.btnReissue }}
                 </button>
-                <button class="action-btn btn-delete" @click="deleteCode(c)">
-                  {{ t.btnDelete }}
+                <button
+                  class="action-btn btn-delete"
+                  :disabled="pendingId === c.id"
+                  @click="deleteCode(c)"
+                >
+                  {{ pendingId === c.id ? '...' : t.btnDelete }}
                 </button>
               </div>
             </div>
@@ -194,9 +205,12 @@ const currentLang = ref(lang.value)
 const codes = ref([])
 const loadingCodes = ref(false)
 const creating = ref(false)
+const pendingId = ref(null)
 const newLabel = ref('')
 const newlyCreated = ref(null)
 const toast = ref(null)
+
+const globalBusy = computed(() => loadingCodes.value || creating.value || pendingId.value !== null)
 
 const statusFilter = ref('all')
 const searchQuery = ref('')
@@ -299,6 +313,7 @@ async function copyCode(code) {
 
 async function reissueCode(c) {
   if (!confirm(t.value.confirmReissue(c.label || c.code))) return
+  pendingId.value = c.id
   try {
     const res = await api.post('/admin-code', { id: c.id })
     const updated = res.data.code
@@ -307,11 +322,14 @@ async function reissueCode(c) {
     showToast(t.value.toastReissued(updated.code))
   } catch {
     showToast(t.value.toastReissueFail, 'error')
+  } finally {
+    pendingId.value = null
   }
 }
 
 async function deleteCode(c) {
   if (!confirm(t.value.confirmDelete(c.label || c.code))) return
+  pendingId.value = c.id
   try {
     await api.delete('/admin-code', { data: { id: c.id } })
     codes.value = codes.value.filter((x) => x.id !== c.id)
@@ -319,6 +337,8 @@ async function deleteCode(c) {
     showToast(t.value.toastDeleted)
   } catch {
     showToast(t.value.toastDeleteFail, 'error')
+  } finally {
+    pendingId.value = null
   }
 }
 
@@ -331,6 +351,29 @@ onMounted(fetchCodes)
 </script>
 
 <style scoped>
+/* ── 상단 진행 바 ────────────────────────── */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 999;
+  background: transparent;
+  pointer-events: none;
+}
+
+.progress-bar.active {
+  background: linear-gradient(90deg, #6b4fa0, #9b6dcc, #6b4fa0);
+  background-size: 200% 100%;
+  animation: progress-slide 1.2s linear infinite;
+}
+
+@keyframes progress-slide {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
 /* ── 반응형: 테이블/카드 전환 ────────────── */
 .code-cards  { display: none; }
 .table-wrapper { display: block; }
