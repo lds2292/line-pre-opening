@@ -17,17 +17,33 @@ supabase login
 supabase link --project-ref <project-ref>
 
 # JWT_SECRET: 64자 이상의 랜덤 문자열
-supabase secrets set JWT_SECRET=cea8b22dba5a8acbc3f1f8dcedad40e69149222eed44839ba4a315bccad4684d60deb812710bfc4e6a739eafa8c3642bc597ebdd839b7deb941d7c549543f018
+supabase secrets set JWT_SECRET=
 
 # ADMIN_USERNAME
-supabase secrets set ADMIN_USERNAME=superadmin
+supabase secrets set ADMIN_USERNAME=
 
 # ADMIN_PASSWORD_HASH: bcrypt 해시 (Node.js로 로컬에서 생성)
 # node -e "console.log(require('bcryptjs').hashSync('raoly9999@@@@', 12))"
-supabase secrets set ADMIN_PASSWORD_HASH='$2b$12$5LkNnLWNxQ8RLr20sKt92uUneKOXfMi3nq4n972XKmJWZTJSD2Zhe'
+supabase secrets set ADMIN_PASSWORD_HASH='$2b$1~~~'
+
+# TEST_CODE: 항상 사용 가능한 테스트용 코드 (DB에 저장되지 않음)
+# 원하는 문자열로 설정 (대소문자 무관, 최대 16자)
+supabase secrets set TEST_CODE=TESTCODE
 ```
 
-## 3. Edge Functions 배포
+## 3. 테스트 코드 비활성화 (정식 오픈 시)
+
+```bash
+# TEST_CODE 삭제 → 이후 해당 코드 입력 시 401 반환
+supabase secrets unset TEST_CODE
+
+# 적용을 위해 함수 재배포 필요
+supabase functions deploy auth-verify
+```
+
+> ⚠️ 정식 오픈(4월 17일) 전에 반드시 실행할 것
+
+## 4. Edge Functions 배포
 
 ```bash
 supabase functions deploy auth-verify
@@ -36,7 +52,7 @@ supabase functions deploy admin-codes
 supabase functions deploy admin-code
 ```
 
-## 4. 로컬 개발
+## 5. 로컬 개발
 
 ```bash
 # 루트에서 의존성 설치
@@ -55,7 +71,7 @@ cp admin/.env.example admin/.env.local
 npm run dev
 ```
 
-## 5. Netlify 배포
+## 6. Netlify 배포
 
 ### Client 사이트
 - Base directory: `client`
@@ -69,7 +85,7 @@ npm run dev
 - Publish directory: `dist`
 - 환경변수: `VITE_API_URL=https://<project-ref>.supabase.co/functions/v1`
 
-## curl 테스트 예시
+## 7. curl 테스트 예시
 
 ```bash
 # 코드 검증

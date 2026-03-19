@@ -2,11 +2,7 @@
   <div class="auth-container">
     <div class="auth-card">
       <div class="logo-area">
-        <div class="logo-circle">
-          <span class="logo-text">Liné</span>
-        </div>
-        <h1 class="clinic-name">リネ美容外科</h1>
-        <p class="clinic-sub">Liné Plastic Surgery Clinic</p>
+        <img src="/logo.webp" alt="リネ美容外科" class="logo-img" />
       </div>
 
       <div class="form-area">
@@ -80,45 +76,27 @@ async function handleSubmit() {
 .auth-card {
   background: #fff;
   border-radius: 16px;
-  padding: 48px 40px;
+  padding: 0 0 40px;
   max-width: 400px;
   width: 100%;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   text-align: center;
+  overflow: hidden;
 }
 
-.logo-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #6b4fa0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
+.form-area {
+  padding: 0 40px;
 }
 
-.logo-text {
-  color: #fff;
-  font-size: 22px;
-  font-style: italic;
-  font-weight: 300;
-  letter-spacing: 1px;
+.logo-area {
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
-.clinic-name {
-  font-size: 20px;
-  font-weight: 500;
-  color: #2c2c2c;
-  margin: 0 0 4px;
-  letter-spacing: 0.05em;
-}
-
-.clinic-sub {
-  font-size: 13px;
-  color: #888;
-  margin: 0 0 32px;
-  letter-spacing: 0.03em;
+.logo-img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
 }
 
 .form-desc {

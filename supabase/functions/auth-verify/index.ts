@@ -42,9 +42,29 @@ Deno.serve(async (req) => {
     }
 
     const trimmedCode = code.trim().toUpperCase()
-    if (trimmedCode.length < 1 || trimmedCode.length > 8) {
+    if (trimmedCode.length < 1 || trimmedCode.length > 16) {
       return new Response(JSON.stringify({ error: 'Invalid code format' }), {
         status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const key = await getJwtKey()
+
+    // 테스트 코드 처리: DB 조회 없이 통과, used 처리 안 함
+    const testCode = Deno.env.get('TEST_CODE')
+    if (testCode && trimmedCode === testCode.trim().toUpperCase()) {
+      const token = await create(
+        { alg: 'HS256', typ: 'JWT' },
+        {
+          sub: 'test',
+          label: 'TEST',
+          exp: Math.floor(Date.now() / 1000) + 3600,
+        },
+        key
+      )
+      return new Response(JSON.stringify({ success: true, token }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
@@ -77,7 +97,6 @@ Deno.serve(async (req) => {
       throw updateError
     }
 
-    const key = await getJwtKey()
     const token = await create(
       { alg: 'HS256', typ: 'JWT' },
       {
