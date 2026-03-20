@@ -51,7 +51,7 @@ async function handleSubmit() {
   } catch (err) {
     const status = err.response?.status
     if (status === 401) {
-      errorMsg.value = '認証番号が無効か、すでに使用されています。'
+      errorMsg.value = '認証番号が無効であるか、すでに使用されています。'
     } else if (status === 429) {
       errorMsg.value = 'しばらく時間をおいて再度お試しください。'
     } else {
