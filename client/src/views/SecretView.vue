@@ -16,6 +16,14 @@
           <img src="/logo.webp" alt="リネ美容外科ロゴ" class="logo-img" />
         </div>
 
+        <!-- 로고 아래 사진 -->
+        <div class="photo-area">
+          <img src="/photo.jpeg" alt="リネ美容外科" class="photo-img" />
+        </div>
+
+        <!-- 원장 이름 -->
+        <p class="doctor-name">チャン・ナム <span class="doctor-title">代表院長</span></p>
+
         <!-- 메인 메시지 -->
         <div class="main-message">
           <p class="preparing-text">
@@ -124,13 +132,66 @@
 /* 로고 */
 .logo-area {
   margin-top: 24px;
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 
 .logo-img {
   width: 100%;
   display: block;
   object-fit: contain;
+}
+
+/* 로고 아래 사진 */
+.photo-area {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+  margin-bottom: 28px;
+  overflow: hidden;
+  max-height: 430px;
+}
+
+.photo-area::before,
+.photo-area::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.photo-area::before {
+  top: 0;
+  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+}
+
+.photo-area::after {
+  bottom: 0;
+  background: linear-gradient(to top, #fff 0%, transparent 100%);
+}
+
+.photo-img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* 원장 이름 */
+.doctor-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 28px;
+  letter-spacing: 0.05em;
+}
+
+.doctor-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: #777;
+  margin-left: 6px;
 }
 
 /* 메인 메시지 */
@@ -183,6 +244,18 @@
   height: 1px;
   background: #e5ddf0;
   margin: 8px 0;
+}
+
+/* 중간 사진 */
+.photo-area {
+  width: 100%;
+  line-height: 0;
+}
+
+.photo-img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .sticky-bottom {
